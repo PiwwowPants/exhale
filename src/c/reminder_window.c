@@ -112,7 +112,7 @@ static void init_action_menu() {
 		static char snooze_entry_text[22];
 		snprintf(snooze_entry_text, sizeof(snooze_entry_text), localize_get_snooze_text(), i * 10);
 		strcpy(snooze_text[i], snooze_entry_text);
-		action_menu_level_add_action(s_snooze_level, snooze_text[i], snooze_performed_callback, (void *)i);
+		action_menu_level_add_action(s_snooze_level, snooze_text[i], snooze_performed_callback, (void *)(i * 10));
 	}
 }
 
@@ -149,11 +149,6 @@ static void reminder_window_load(Window *window) {
 	layer_set_update_proc(s_canvas_layer, canvas_update_proc);
 	
 	layer_add_child(window_layer, s_canvas_layer);
-	
-	// Only vibrate when the watch isn't in Quiet Time
-	if (!quiet_time_is_active()){
-		vibes_double_pulse();
-	}
 	
 	window_set_background_color(s_reminder_window, PBL_IF_COLOR_ELSE(random_color, GColorWhite));
 	
@@ -207,4 +202,9 @@ void reminder_window_push() {
 	window_set_click_config_provider(s_reminder_window, click_config_provider);
 	
 	window_stack_push(s_reminder_window, true);
+	
+		// Only vibrate when the watch isn't in Quiet Time
+	if (!quiet_time_is_active()){
+		vibes_double_pulse();
+	}
 }

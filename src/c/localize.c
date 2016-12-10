@@ -123,6 +123,7 @@ char * localize_get_min_breathed_today_text() {
 }
 
 char * localize_get_steps_today_text(int thousands) {
+	#if defined(PBL_HEALTH)
 	if (settings_get_heartRateVariation() && data_get_current_heart_rate() != 0) {
 		if(thousands >= 10) { // There's a ten thousands digit!
 			if (strncmp(localize_get_locale(), "fr", 2) == 0) {
@@ -140,11 +141,7 @@ char * localize_get_steps_today_text(int thousands) {
 			}
 		} else if (thousands > 0) { // There's just one thousands digit
 			if (strncmp(localize_get_locale(), "fr", 2) == 0) {
-				#ifdef PBL_ROUND
-					return "\u2764 %d.%03d PAS AUJ.";
-				#else
-					return "\u2764 %d.%03d PAS AUJOURD'HUI";
-				#endif
+				return "\u2764 %d.%03d PAS AUJ.";
 			} else if (strncmp(localize_get_locale(), "es", 2) == 0) {
 				return "\u2764 %d.%03d PASOS HOY";
 			} else if (strncmp(localize_get_locale(), "de", 2) == 0) {
@@ -158,11 +155,7 @@ char * localize_get_steps_today_text(int thousands) {
 			}
 		} else { // There isn't a thousands digit!
 			if (strncmp(localize_get_locale(), "fr", 2) == 0) {
-				#ifdef PBL_ROUND
-					return "\u2764 %d PAS AUJ.";
-				#else
-					return "\u2764 %d PAS AUJOURD'HUI";
-				#endif
+				return "\u2764 %d PAS AUJ.";
 			} else if (strncmp(localize_get_locale(), "es", 2) == 0) {
 				return "\u2764 %d PASOS HOY";
 			} else if (strncmp(localize_get_locale(), "de", 2) == 0) {
@@ -176,6 +169,7 @@ char * localize_get_steps_today_text(int thousands) {
 			}
 		}
 	} else {
+	#endif
 		if(thousands >= 10) { // There's a ten thousands digit!
 			if (strncmp(localize_get_locale(), "fr", 2) == 0) {
 				return "%d.%03d PAS AUJ.";
@@ -227,10 +221,13 @@ char * localize_get_steps_today_text(int thousands) {
 				return "%d STEPS TODAY";
 			}
 		}
+	#if defined(PBL_HEALTH)
 	}
+	#endif
 }
 
 char * localize_get_heart_rate_text() {
+	#if defined(PBL_HEALTH)
 	if (settings_get_heartRateVariation() && data_get_current_heart_rate() != 0) {
 		if (strncmp(localize_get_locale(), "fr", 2) == 0) {
 			return "\u2764 %lu BPM";
@@ -242,6 +239,7 @@ char * localize_get_heart_rate_text() {
 			return "\u2764 %lu BPM";
 		}
 	} else {
+	#endif
 		if (strncmp(localize_get_locale(), "fr", 2) == 0) {
 			return "%lu BPM";
 		} else if (strncmp(localize_get_locale(), "es", 2) == 0) {
@@ -251,7 +249,9 @@ char * localize_get_heart_rate_text() {
 		} else {
 			return "%lu BPM";
 		}
+	#if defined(PBL_HEALTH)
 	}
+	#endif
 }
 
 char * localize_get_reminder_action_menu_text() {
@@ -279,6 +279,7 @@ char * localize_get_reminder_text() {
 }
 
 char * localize_get_greet_text() {
+	#if defined(PBL_HEALTH)
 	if (settings_get_heartRateVariation() && data_get_current_heart_rate() != 0) {
 		if (strncmp(localize_get_locale(), "fr", 2) == 0) {
 			return "\u2764 BONJOUR!";
@@ -290,6 +291,7 @@ char * localize_get_greet_text() {
 			return "\u2764 HELLO!";
 		}
 	} else {
+	#endif
 		if (strncmp(localize_get_locale(), "fr", 2) == 0) {
 			return "BONJOUR!";
 		} else if (strncmp(localize_get_locale(), "es", 2) == 0) {
@@ -299,7 +301,9 @@ char * localize_get_greet_text() {
 		} else {
 			return "HELLO!";
 		}
+	#if defined(PBL_HEALTH)
 	}
+	#endif
 }
 
 char * localize_get_snooze_text() {

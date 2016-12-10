@@ -2,6 +2,7 @@
 #include "data.h"
 #include "localize.h"
 
+#if defined(PBL_HEALTH)
 static int s_current_steps;
 HealthValue s_current_heart_rate;
 static char s_current_steps_buffer[22], s_current_heart_rate_buffer[8];
@@ -52,8 +53,18 @@ int data_get_current_heart_rate() {
 	return s_current_heart_rate;
 }
 
+// Calculates a rolling average
 void data_set_current_heart_rate(int value) {
-	s_current_heart_rate = value;
+	int alpha = 64; // lower alpha -> slower changes
+	s_current_heart_rate = (alpha * value + (256 - alpha) * s_current_heart_rate )/ 256;
+	//APP_LOG(APP_LOG_LEVEL_DEBUG, "Raw BPM: %d, avg BPM: %d", value, (int)s_current_heart_rate);
+}
+
+// Sets heart rate sample period to get fresh data
+void data_set_heart_rate_period(int val){
+	#if PBL_API_EXISTS(health_service_set_heart_rate_sample_period)
+		health_service_set_heart_rate_sample_period(val);
+	#endif
 }
 
 char* data_get_current_steps_buffer() {
@@ -63,6 +74,7 @@ char* data_get_current_steps_buffer() {
 char* data_get_current_heart_rate_buffer() {
 	return s_current_heart_rate_buffer;
 }
+#endif
 
 // Gets today's date
 char *data_get_date_today() {
@@ -122,6 +134,7 @@ void data_write_last_duration_data(int last_duration) {
 	persist_write_int(LAST_DURATION_KEY, last_duration);
 }
 
+// Get last duration from persistent storage
 int data_read_last_duration_data() {
 	int last_duration = 0;
 	if (persist_exists(LAST_DURATION_KEY)) {
@@ -134,10 +147,12 @@ int data_read_last_duration_data() {
 	return last_duration;
 }
 
+// Store Wakeup id
 void data_write_wakeup_time_data(char* wakeup_time) {
 	persist_write_string(WAKEUP_TIME_KEY, wakeup_time);
 }
 
+// Wakeup time as a string
 char * data_read_wakeup_time_data() {
 	static char wakeup_time[9];
 	if (persist_exists(WAKEUP_TIME_KEY)) {
